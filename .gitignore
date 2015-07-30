@@ -59,3 +59,4 @@ target/
 # web2py
 private/
 databases/
+sessions/
