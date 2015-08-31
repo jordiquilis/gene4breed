@@ -89,5 +89,19 @@ auth.settings.actions_disabled.append('register')
 ## >>> for row in rows: print row.id, row.myfield
 #########################################################################
 
+db.define_table('contact',
+                Field('contact_email', requires=IS_EMAIL(), required=True),
+                Field('question', 'text', requires=IS_NOT_EMPTY(error_message='Please, fill this field'), required=True),
+                format='%(contact_email)s %(id)s',
+                singular='Contact', plural='Contacts')
+
+db.define_table('news',
+                Field('title'),
+                Field('description', type='text'),
+                Field('published', type='boolean'),
+                Field('date_published', type='datetime'),
+                format='%(title)s - %(description)s',
+                singular='New', plural='News')
+
 ## after defining tables, uncomment below to enable auditing
 # auth.enable_record_versioning(db)

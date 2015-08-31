@@ -1,0 +1,15 @@
+{{extend 'layout.html'}}
+<h2>Management Interface</h2>
+
+<h3>Database</h3>
+<ul>
+    <li><a href="{{=URL('manager','contact')}}">Contact</a></li>
+    <li><a href="{{=URL('manager','news')}}">News</a></li>
+    <li><a href="{{=URL('manager','traits')}}">Traits</a></li>
+</ul>
+
+<h3>Application</h3>
+<ul>
+    <li><a href="{{=URL(request.application, 'appadmin','index')}}">Application admin</a></li>
+    <li><a href="{{=URL('admin', 'default', 'site')}}">Web2py admin</a></li>
+</ul>
