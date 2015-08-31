@@ -103,5 +103,10 @@ db.define_table('news',
                 format='%(title)s - %(description)s',
                 singular='New', plural='News')
 
+db.define_table('species',
+                Field('name', length=255, required=True, unique=True),
+                format='%(name)s',
+                singular='Specie', plural='Species')
+
 ## after defining tables, uncomment below to enable auditing
 # auth.enable_record_versioning(db)

@@ -16,7 +16,12 @@ def index():
     if you need a simple wiki simply replace the two lines below with:
     return auth.wiki()
     """
-    return dict()
+    display_actions = auth.is_logged_in()
+    stats = {}
+    if auth.is_logged_in():
+        # Calculate statistics from DataBase
+        stats['Number of species'] = db(db.species).count()
+    return dict(display_actions=display_actions, stats=stats)
 
 
 def user():

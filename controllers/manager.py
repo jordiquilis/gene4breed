@@ -21,6 +21,12 @@ def news():
 
 
 @auth.requires_membership('manager')
+def species():
+    grid = SQLFORM.smartgrid(db.species)
+    return dict(grid=grid)
+
+
+@auth.requires_membership('manager')
 def traits():
     grid = SQLFORM.smartgrid(db.traits)
     return dict(grid=grid)
