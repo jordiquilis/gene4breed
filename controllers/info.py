@@ -22,3 +22,7 @@ def contactus():
         response.flash = 'Can not submit your question'
         response.flash_level = 'flash-error'
     return dict(form=form)
+
+
+def faq_and_help():
+    return dict()
