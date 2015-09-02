@@ -111,5 +111,82 @@ db.define_table('species',
                 format='%(name)s',
                 singular='Specie', plural='Species')
 
+db.define_table('species_types',
+                Field('name', length=255, required=True),
+                Field('species', db.species),
+                format='%(name)s',
+                singular='SpeciesType', plural='SpeciesTypes')
+
+db.define_table('experiments',
+                Field('name'),
+                Field('experiment_date', type='datetime'),
+                Field('users', db.auth_user),
+                format='%(name)s - %(experiment_date)s',
+                singular='Experiment', plural='Experiments')
+
+db.define_table('plant_lines',
+                Field('material_code'),
+                Field('generation'),
+                Field('treatment_num', 'integer'),
+                Field('plant_num', 'integer'),
+                Field('plot_nr'),
+                Field('P1'),
+                Field('P2'),
+                Field('pedigree'),
+                Field('declared_resistance'),
+                Field('lab_code'),
+                Field('species_type', db.species_types),
+                format='%(material_code)s',
+                singular='Line', plural='Lines')
+
+db.define_table('traits',
+                Field('species', db.species),
+                Field('name'),
+                Field('acronym'),
+                Field('genetic_control'),
+                Field('dominance'),
+                Field('related_markers'),
+                Field('description'),
+                Field('project'),
+                format='%(name)s',
+                singular='Trait', plural='Traits')
+
+db.define_table('markers',
+                Field('species', db.species),
+                Field('chromosome'),
+                Field('name1'),
+                Field('name2'),
+                Field('chr_position', 'integer'),
+                Field('marker_sequence', type='text'),
+                Field('marker_type'),
+                Field('variant_type'),
+                Field('related_traits'),
+                Field('project'),
+                format='%(name1)s',
+                singular='Marker', plural='Markers')
+
+db.define_table('plants',
+                Field('name'),
+                Field('plant_line', db.plant_lines),
+                format='%(name)s',
+                singular='Plant', plural='Plants')
+
+db.define_table('exp_plant_marker',
+                Field('experiment', db.experiments),
+                Field('plant', db.plants),
+                Field('marker', db.markers),
+                Field('marker_value'),
+                format='%(marker_value)s',
+                singular='Marker value', plural='Markers values')
+
+db.define_table('exp_plant_trait',
+                Field('experiment', db.experiments),
+                Field('plant', db.plants),
+                Field('trait', db.traits),
+                Field('trait_value'),
+                format='%(trait_value)s',
+                singular='Trait value', plural='Traits values')
+
+
 ## after defining tables, uncomment below to enable auditing
 # auth.enable_record_versioning(db)

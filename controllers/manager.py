@@ -8,6 +8,7 @@ if 0:
 def index():
     return dict()
 
+
 @auth.requires_membership('manager')
 def contact():
     grid = SQLFORM.smartgrid(db.contact)
@@ -27,6 +28,54 @@ def species():
 
 
 @auth.requires_membership('manager')
+def species_types():
+    grid = SQLFORM.smartgrid(db.species_types)
+    return dict(grid=grid)
+
+
+@auth.requires_membership('manager')
 def traits():
     grid = SQLFORM.smartgrid(db.traits)
+    return dict(grid=grid)
+
+
+@auth.requires_membership('manager')
+def lines():
+    grid = SQLFORM.smartgrid(db.plant_lines)
+    return dict(grid=grid)
+
+
+@auth.requires_membership('manager')
+def experiments():
+    grid = SQLFORM.smartgrid(db.experiments)
+    return dict(grid=grid)
+
+
+@auth.requires_membership('manager')
+def users():
+    grid = SQLFORM.smartgrid(db.auth_user)
+    return dict(grid=grid)
+
+
+@auth.requires_membership('manager')
+def markers():
+    grid = SQLFORM.smartgrid(db.markers)
+    return dict(grid=grid)
+
+
+@auth.requires_membership('manager')
+def marker_values():
+    grid = SQLFORM.smartgrid(db.exp_plant_marker)
+    return dict(grid=grid)
+
+
+@auth.requires_membership('manager')
+def trait_values():
+    grid = SQLFORM.smartgrid(db.exp_plant_trait)
+    return dict(grid=grid)
+
+
+@auth.requires_membership('manager')
+def plants():
+    grid = SQLFORM.smartgrid(db.plants)
     return dict(grid=grid)
