@@ -79,3 +79,18 @@ def trait_values():
 def plants():
     grid = SQLFORM.smartgrid(db.plants)
     return dict(grid=grid)
+
+
+@auth.requires_membership('manager')
+def import_traits():
+    return dict()
+
+
+@auth.requires_membership('manager')
+def import_markers():
+    return dict()
+
+
+@auth.requires_membership('manager')
+def import_experiment_data():
+    return dict()

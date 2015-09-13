@@ -14,7 +14,12 @@
 
 <h2>Welcome to Gene4Breed</h2>
 {{if display_actions:}}
-
+<h3>Upload experimental data</h3>
+<ul>
+    <li><a href="{{=URL('manager','import_traits')}}">Import traits</a></li>
+    <li><a href="{{=URL('manager','import_markers')}}">Import markers</a></li>
+    <li><a href="{{=URL('manager','import_experiment_data')}}">Import experiment data</a></li>
+</ul>
 {{pass}}
 
 <h3>Statistics</h3>
