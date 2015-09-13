@@ -3,6 +3,9 @@
 if 0:
     from __init__ import *  # @UnusedWildImport
 
+import csv_util
+import file_util
+
 
 @auth.requires_membership('manager')
 def index():
@@ -81,9 +84,45 @@ def plants():
     return dict(grid=grid)
 
 
+
+def process_import_traits(form):
+    file_name = form.vars.traits_csv_file.filename
+    extension = file_util.get_file_extension(file_name)
+    if extension not in ['.csv']:
+        form.errors.traits_csv_file = 'Wrong file extension'
+        return False
+    return True
+
+
 @auth.requires_membership('manager')
 def import_traits():
-    return dict()
+    traits = []
+    traits_errors = []
+    traits_form = FORM(
+                        INPUT(_name='traits_csv_file', _type='file'),
+                        INPUT(_name='submit', _type='submit', _value='Import traits data')
+                      )
+    if traits_form.process(onvalidation=process_import_traits).accepted:
+        traits = csv_util.parse_traits(traits_form.vars.traits_csv_file.file)
+        for trait in traits:
+            try:
+                specie = db(db.species.name == trait['traits.species']).select().first()
+                db.traits.insert(name=trait['traits.name'], species=specie.id, 
+                            acronym=trait['traits.acronym'], genetic_control=trait['traits.genetic_control'], 
+                            dominance=trait['traits.dominance'], related_markers=trait['traits.related_markers'], 
+                            description=trait['traits.description'], project=trait['traits.project'])
+            except:
+                traits_errors.append(trait)
+        if len(traits_errors):
+            response.flash = 'Data imported with errors'
+        else:
+            response.flash = 'Data successfully imported'
+    elif traits_form.errors:
+        response.flash = 'Error in provided data'
+    else:
+        pass
+                                                                     
+    return dict(form=traits_form, traits=traits, traits_errors=traits_errors)
 
 
 @auth.requires_membership('manager')

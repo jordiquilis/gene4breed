@@ -1,4 +1,12 @@
 {{extend 'manager_layout.html'}}
 <h2>Import traits data</h2>
 
+{{=form}}
 
+{{if len(traits_errors):}}
+    <h3>Error importing the following traits:</h3>
+    {{for trait_error in traits_errors:}}
+        {{=BEAUTIFY(trait_error)}}
+        <br>
+    {{pass}}
+{{pass}}
