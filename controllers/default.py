@@ -18,9 +18,15 @@ def index():
     """
     display_actions = auth.is_logged_in()
     stats = {}
+    # Statistics
+    stats['Number of species'] = db(db.species).count()
+    stats['Number of traits'] = db(db.traits).count()
+    stats['Number of markers'] = db(db.markers).count()
+    stats['Number of experiments'] = db(db.experiments).count()
+
     if auth.is_logged_in():
-        # Calculate statistics from DataBase
-        stats['Number of species'] = db(db.species).count()
+        # Data to show only for identified users
+        pass
     return dict(display_actions=display_actions, stats=stats)
 
 

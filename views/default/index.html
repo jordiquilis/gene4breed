@@ -14,10 +14,12 @@
 
 <h2>Welcome to Gene4Breed</h2>
 {{if display_actions:}}
-    <h3>Statistics</h3>
-    <ul>
-        {{for caption, value in stats.iteritems():}}
-            <li>{{=caption}}:&nbsp;{{=value}}</li>
-        {{pass}}
-    </ul>
+
 {{pass}}
+
+<h3>Statistics</h3>
+<ul>
+    {{for caption, value in stats.iteritems():}}
+        <li>{{=caption}}:&nbsp;{{=value}}</li>
+    {{pass}}
+</ul>
