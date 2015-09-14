@@ -1,3 +1,12 @@
 {{extend 'manager_layout.html'}}
 <h2>Import experiment data</h2>
 
+{{=form}}
+
+{{if len(data_errors):}}
+    <h3>Error importing the following experiment data:</h3>
+    {{for data_error in data_errors:}}
+        {{=BEAUTIFY(data_error)}}
+        <br>
+    {{pass}}
+{{pass}}

@@ -168,6 +168,83 @@ def import_markers():
     return dict(form=markers_form, markers=markers, markers_errors=markers_errors)
 
 
+def process_import_experiment_data(form):
+    file_name = form.vars.experiment_data_csv_file.filename
+    extension = file_util.get_file_extension(file_name)
+    if extension not in ['.csv']:
+        form.errors.experiment_data_csv_file = 'Wrong file extension'
+        return False
+    return True
+
+def get_experiment(experiment_name):
+    try:
+        return db(db.experiments.name == experiment_name).select().first()
+    except:
+        return None
+
+def get_specie_type(specie_name, specie_type):
+    try:
+        query = db((db.species_types.species == db.species.id) & (db.species.name==specie_name) & (db.species_types.name==specie_type)).select()
+        return query.first()
+    except:
+        return None
+
+def get_plant_line(material_code, plant_num):
+    try:
+        query = db((db.plant_lines.plant_num == plant_num) & (db.plant_lines.material_code==material_code)).select()
+        return query.first()
+    except:
+        return None
+
+def insert_plant_line(r, specie_type):
+    plant_line = db.plant_lines.insert(treatment_num=r['plant_lines.treatment_num'], generation=r['plant_lines.generation'],
+                            material_code=r['plant_lines.material_code'], plant_num=r['plant_lines.plant_num'],
+                            plot_nr=r['plant_lines.plot_nr'], P1=r['plant_lines.p1'], P2=r['plant_lines.p2'],
+                            pedigree=r['plant_lines.pedigree'], declared_resistance=r['plant_lines.declared_resistance'],
+                            species_type=specie_type)
+    return plant_line
+
+def insert_plant(lab_code, plant_line_id):
+    plant = db.plants.insert(name=lab_code, plant_line=plant_line_id)
+    return plant
+
 @auth.requires_membership('manager')
 def import_experiment_data():
-    return dict()
+    data = []
+    data_errors = []
+    form = FORM(
+                INPUT(_name='experiment_data_csv_file', _type='file'),
+                INPUT(_name='submit', _type='submit', _value='Import experiment data')
+                )
+    if form.process(onvalidation=process_import_experiment_data).accepted:
+        experiment_data = csv_util.parse_experiment(form.vars.experiment_data_csv_file.file)
+        for index, record in enumerate(experiment_data):
+            try:
+                experiment = get_experiment(record['experiments.name'])
+                if experiment is None:
+                    raise Exception(' in record %d -> Experiment not found' % index)
+                specie_type = get_specie_type(record['species.name'], record['plant_lines.species_type'])
+                if specie_type is None:
+                    raise Exception(' in record %d -> Specie type not found' % index)
+                plant_line = get_plant_line(record['plant_lines.material_code'], record['plant_lines.plant_num'])
+                if plant_line is None:
+                    plant_line = insert_plant_line(record, specie_type.species_types)
+                if plant_line is None or plant_line.id is None:
+                    raise Exception(' in record %d -> Can not import plant line' % index)
+                plant = insert_plant(record['plant_lines.lab_code'], plant_line.id)
+                if plant is None:
+                    raise Exception(' in record %d -> Can not import plant' % index)
+            except Exception, e:
+                data_errors.append('Error is %s' % str(e))
+                data_errors.append(experiment)
+
+        if len(data_errors):
+            response.flash = 'Data imported with errors'
+        else:
+            response.flash = 'Data successfully imported'
+    elif form.errors:
+        response.flash = 'Error in provided data'
+    else:
+        pass
+
+    return dict(form=form, data_errors=data_errors)

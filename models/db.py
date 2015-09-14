@@ -134,10 +134,9 @@ db.define_table('plant_lines',
                 Field('P2'),
                 Field('pedigree'),
                 Field('declared_resistance'),
-                Field('lab_code'),
                 Field('species_type', db.species_types),
                 format='%(material_code)s',
-                singular='Line', plural='Lines')
+                singular='Plant line', plural='Plant lines')
 
 db.define_table('traits',
                 Field('species', db.species),
