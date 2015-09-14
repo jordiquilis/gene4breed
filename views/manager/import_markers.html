@@ -1,4 +1,12 @@
 {{extend 'manager_layout.html'}}
 <h2>Import markers data</h2>
 
+{{=form}}
 
+{{if len(markers_errors):}}
+    <h3>Error importing the following markers:</h3>
+    {{for marker_error in markers_errors:}}
+        {{=BEAUTIFY(marker_error)}}
+        <br>
+    {{pass}}
+{{pass}}

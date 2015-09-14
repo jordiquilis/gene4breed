@@ -125,9 +125,47 @@ def import_traits():
     return dict(form=traits_form, traits=traits, traits_errors=traits_errors)
 
 
+
+def process_import_markers(form):
+    file_name = form.vars.markers_csv_file.filename
+    extension = file_util.get_file_extension(file_name)
+    if extension not in ['.csv']:
+        form.errors.markers_csv_file = 'Wrong file extension'
+        return False
+    return True
+
 @auth.requires_membership('manager')
 def import_markers():
-    return dict()
+    markers = []
+    markers_errors = []
+    markers_form = FORM(
+                        INPUT(_name='markers_csv_file', _type='file'),
+                        INPUT(_name='submit', _type='submit', _value='Import markers data')
+                      )
+    if markers_form.process(onvalidation=process_import_markers).accepted:
+        markers = csv_util.parse_markers(markers_form.vars.markers_csv_file.file)
+        for marker in markers:
+            try:
+                specie = db(db.species.name == marker['markers.species']).select().first()
+                db.markers.insert(chromosome=marker['markers.chromosome'], species=specie.id,
+                            name1=marker['markers.name1'], name2=marker['markers.name2'],
+                            chr_position=marker['markers.chr_position'], marker_sequence=marker['markers.marker_sequence'],
+                            marker_type=marker['markers.marker_type'], variant_type=marker['markers.variant_type'],
+                            related_traits=marker['markers.related_traits'], project=marker['markers.project'])
+            except Exception, e:
+                markers_errors.append('Error is %s' % str(e))
+                markers_errors.append(marker)
+
+        if len(markers_errors):
+            response.flash = 'Data imported with errors'
+        else:
+            response.flash = 'Data successfully imported'
+    elif markers_form.errors:
+        response.flash = 'Error in provided data'
+    else:
+        pass
+
+    return dict(form=markers_form, markers=markers, markers_errors=markers_errors)
 
 
 @auth.requires_membership('manager')
