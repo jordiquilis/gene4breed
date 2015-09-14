@@ -208,6 +208,35 @@ def insert_plant(lab_code, plant_line_id):
     plant = db.plants.insert(name=lab_code, plant_line=plant_line_id)
     return plant
 
+def check_markers_and_traits(header):
+    to_check = []
+    for field in header:
+        if len(field.split('.')) <= 1:
+            to_check.append(field)
+    traits = {}
+    markers = {}
+    for field in to_check:
+        # Check first if it is a marker
+        marker = db(db.markers.name1 == field).select().first()
+        if marker:
+            markers[field] = marker.id
+        else:
+            # Check if it is a trait then
+            trait = db(db.traits.acronym == field).select().first()
+            if trait:
+                traits[field] = trait.id
+            else:
+                raise Exception('%s not recognized as a trait or marker' % field)
+    return markers, traits
+
+def insert_markers_info(r, markers, plant, experiment):
+    for marker_name, marker_id in markers.iteritems():
+        db.exp_plant_marker.insert(experiment=experiment.id, plant=plant.id, marker=marker_id, marker_value=r[marker_name])
+
+def insert_traits_info(r, traits, plant, experiment):
+    for trait_name, trait_id in traits.iteritems():
+        db.exp_plant_trait.insert(experiment=experiment.id, plant=plant.id, trait=trait_id, trait_value=r[trait_name])
+
 @auth.requires_membership('manager')
 def import_experiment_data():
     data = []
@@ -218,25 +247,33 @@ def import_experiment_data():
                 )
     if form.process(onvalidation=process_import_experiment_data).accepted:
         experiment_data = csv_util.parse_experiment(form.vars.experiment_data_csv_file.file)
-        for index, record in enumerate(experiment_data):
-            try:
-                experiment = get_experiment(record['experiments.name'])
-                if experiment is None:
-                    raise Exception(' in record %d -> Experiment not found' % index)
-                specie_type = get_specie_type(record['species.name'], record['plant_lines.species_type'])
-                if specie_type is None:
-                    raise Exception(' in record %d -> Specie type not found' % index)
-                plant_line = get_plant_line(record['plant_lines.material_code'], record['plant_lines.plant_num'])
-                if plant_line is None:
-                    plant_line = insert_plant_line(record, specie_type.species_types)
-                if plant_line is None or plant_line.id is None:
-                    raise Exception(' in record %d -> Can not import plant line' % index)
-                plant = insert_plant(record['plant_lines.lab_code'], plant_line.id)
-                if plant is None:
-                    raise Exception(' in record %d -> Can not import plant' % index)
-            except Exception, e:
-                data_errors.append('Error is %s' % str(e))
-                data_errors.append(experiment)
+        try:
+            markers, traits = check_markers_and_traits(experiment_data[0].keys())
+        except Exception, e:
+            data_errors.append('Error in markers or traits: %s' % str(e))
+        
+        if len(data_errors) == 0:    
+            for index, record in enumerate(experiment_data):
+                try:
+                    experiment = get_experiment(record['experiments.name'])
+                    if experiment is None:
+                        raise Exception(' in record %d -> Experiment not found' % index)
+                    specie_type = get_specie_type(record['species.name'], record['plant_lines.species_type'])
+                    if specie_type is None:
+                        raise Exception(' in record %d -> Specie type not found' % index)
+                    plant_line = get_plant_line(record['plant_lines.material_code'], record['plant_lines.plant_num'])
+                    if plant_line is None:
+                        plant_line = insert_plant_line(record, specie_type.species_types)
+                    if plant_line is None or plant_line.id is None:
+                        raise Exception(' in record %d -> Can not import plant line' % index)
+                    plant = insert_plant(record['plant_lines.lab_code'], plant_line.id)
+                    if plant is None:
+                        raise Exception(' in record %d -> Can not import plant' % index)
+                    insert_markers_info(record, markers, plant, experiment)
+                    insert_traits_info(record, traits, plant, experiment)
+                except Exception, e:
+                    data_errors.append('Error is %s' % str(e))
+                    data_errors.append(experiment)
 
         if len(data_errors):
             response.flash = 'Data imported with errors'
