@@ -1,0 +1,41 @@
+{{extend 'layout.html'}}
+<h2>Plant genotype comparison</h2>
+
+<h3>Statistics for specie <em>{{=specie.name}}</em> and type <em>{{=specie_type.name}}</em></h3>
+
+<form enctype="multipart/form-data" action="{{=URL('stats', 'plant_genotype_comparison')}}" method="post">
+
+<input type="hidden" id="specie_id" name="specie_id" value="{{=specie.id}}">
+<input type="hidden" id="species_types" name="species_types" value="{{=specie_type.id}}">
+
+Reference plant:
+<select id="reference_plant" name="reference_plant">
+ {{for plant in plants:}}
+    <option value='{{=plant.id}}'>{{=plant.name}}</option>
+ {{pass}}
+</select>
+
+<br><br>
+
+Plants to compare:<br>
+<select multiple id="plants_to_compare" name="plants_to_compare" style="height:190px; width:235px;">
+ {{for plant in plants:}}
+     <option value='{{=plant.id}}'>{{=plant.name}}</option>
+ {{pass}}
+</select>
+
+<br>
+
+<input type="submit" value="Compare selected plants with reference">
+
+</form>
+
+{{if comparison: }}
+    <br>
+    <h3>Scores:</h3>
+    <ul>
+    {{for plant_id, plant in comparison['results'].iteritems():}}
+        <li><b>{{=plant['plant_name']}} ({{=plant_id}}):</b>&nbsp;{{=plant['score']}}</li>
+    {{pass}}
+    </ul>
+{{pass}}
