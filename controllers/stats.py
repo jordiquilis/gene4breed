@@ -34,6 +34,11 @@ def species_types():
 
 @auth.requires_membership('manager')
 def specie_type_stats():
+    try:
+        int(request.vars.specie_id)
+        int(request.vars.species_types)
+    except:
+        redirect(URL('stats', 'datapoints_and_plants'))
     specie = db(db.species.id == request.vars.specie_id).select().first()
     specie_type = db(db.species_types.id == request.vars.species_types).select().first()
     stats = {}
@@ -52,3 +57,9 @@ def specie_type_stats():
                                          (db.plants.plant_line==db.plant_lines.id) &
                                          (db.plant_lines.species_type==specie_type.id)).select(groupby=db.plants.name))
     return dict(specie=specie, specie_type=specie_type, stats=stats)
+
+
+@auth.requires_membership('manager')
+def genotype_comparison():
+    species = db(db.species).select()
+    return dict(species=species)

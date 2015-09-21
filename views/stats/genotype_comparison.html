@@ -1,9 +1,9 @@
 {{extend 'layout.html'}}
-<h2>Datapoints and plants</h2>
+<h2>Plant genotype comparsion</h2>
 
 <h3>Statistics</h3>
 
-<form enctype="multipart/form-data" action="{{=URL('stats','specie_type_stats')}}" method="post">
+<form enctype="multipart/form-data" action="{{=URL('stats','plant_genotype_comparison')}}" method="post">
     Specie: &nbsp;    
     <select id="species" name="species" onchange="changeSpecies();">
         <option value='select one'>--select specie--</option>
@@ -15,8 +15,6 @@
     <input type="hidden" id="specie_id" name="specie_id" value="">
     
     <div id="species_types_div"></div>
-
-    <input type="submit" value="Calculate statistics"/>
 </form>
     
 <script language="javascript">
