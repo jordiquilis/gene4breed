@@ -6,6 +6,11 @@ if 0:
 
 @auth.requires_membership('manager')
 def index():
+    return dict()
+
+
+@auth.requires_membership('manager')
+def datapoints_and_plants():
     species = db(db.species).select()
     return dict(species=species)
 

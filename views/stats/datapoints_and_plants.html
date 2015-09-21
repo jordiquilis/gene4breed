@@ -1,0 +1,28 @@
+{{extend 'layout.html'}}
+<h2>Datapoints and plants</h2>
+
+<h3>Statistics</h3>
+
+<form enctype="multipart/form-data" action="{{=URL('stats','specie_type_stats')}}" method="post">
+    Specie: &nbsp;    
+    <select id="species" name="species" onchange="changeSpecies();">
+        <option value='select one'>--select specie--</option>
+        {{for specie in species:}}
+            <option value='{{=specie.id}}'>{{=specie.name}}</option>
+        {{pass}}
+    </select>
+    
+    <input type="hidden" id="specie_id" name="specie_id" value="">
+    
+    <div id="species_types_div"></div>
+</form>
+    
+<script language="javascript">
+    function changeSpecies() {
+        var speciesopts = document.getElementById("species");
+        var specie = speciesopts.options[speciesopts.selectedIndex].value;
+        var x = document.getElementById("specie_id");
+            x.value = specie;
+            ajax('species_types', ['specie_id'], 'species_types_div');    
+    };
+</script>

@@ -25,4 +25,4 @@ response.menu = [
 
 if auth.is_logged_in():
     response.menu.append((T('Manager'), False, URL('manager', 'index')))
-    response.menu.append((T('Datapoints and Plants'), False, URL('stats', 'index')))
+    response.menu.append((T('Stats'), False, URL('stats', 'index')))
