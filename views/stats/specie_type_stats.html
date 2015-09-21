@@ -1,0 +1,9 @@
+{{extend 'layout.html'}}
+<h2>Datapoints and plants</h2>
+
+<h3>Statistics for specie <em>{{=specie.name}}</em> and type <em>{{=specie_type.name}}</em></h3>
+<ul>
+{{for name, value in stats.iteritems():}}
+    <li><b>{{=name}}</b>: {{=value}}</li>
+{{pass}}
+</ul>

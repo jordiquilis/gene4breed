@@ -1,6 +1,7 @@
-    
-<select id="species_types">
+Specie Type:&nbsp;    
+<select id="species_types" name="species_types">
     {{for specie_type in species_types:}}
-        <option value='{{=specie_type.name}}'>{{=specie_type.name}}</option>
+        <option value='{{=specie_type.id}}'>{{=specie_type.name}}</option>
     {{pass}}
 </select>
+<input type="submit" value="Calculate statistics"/>
