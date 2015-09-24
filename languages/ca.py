@@ -444,6 +444,7 @@
 'static': 'estàtics',
 'Static files': 'Fitxers estàtics',
 'Statistics': 'Estadístiques',
+'Stats': 'Stats',
 'Stylesheet': "Fulla d'estil",
 'Submit': 'Enviar',
 'submit': 'enviar',

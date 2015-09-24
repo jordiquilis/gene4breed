@@ -1,0 +1,30 @@
+{{extend 'layout.html'}}
+<h2>Plant genotype comparison 2 (Biopython)</h2>
+
+<h3>Statistics for specie <em>{{=specie.name}}</em> and type <em>{{=specie_type.name}}</em></h3>
+
+<form enctype="multipart/form-data" action="{{=URL('stats', 'bio_plant_genotype_comparison')}}" method="post">
+
+<input type="hidden" id="specie_id" name="specie_id" value="{{=specie.id}}">
+<input type="hidden" id="species_types" name="species_types" value="{{=specie_type.id}}">
+
+Plants to compare:<br>
+<select multiple id="plants_to_compare" name="plants_to_compare" style="height:190px; width:235px;">
+ {{for plant in plants:}}
+     <option value='{{=plant.id}}'>{{=plant.name}}</option>
+ {{pass}}
+</select>
+
+<br>
+
+<input type="submit" value="Run clustalW">
+
+</form>
+
+{{if comparison: }}
+    <br>
+    <h3>Results:</h3>
+    <pre>
+    {{=BEAUTIFY(comparison['tree'])}}
+    </pre>
+{{pass}}

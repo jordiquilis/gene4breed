@@ -1,9 +1,9 @@
 {{extend 'layout.html'}}
-<h2>Plant genotype comparison</h2>
+<h2>Plant genotype comparison 2 (Biopython)</h2>
 
 <h3>Statistics</h3>
 
-<form enctype="multipart/form-data" action="{{=URL('stats','plant_genotype_comparison')}}" method="post">
+<form enctype="multipart/form-data" action="{{=URL('stats','bio_plant_genotype_comparison')}}" method="post">
     Specie: &nbsp;    
     <select id="species" name="species" onchange="changeSpecies();">
         <option value='select one'>--select specie--</option>

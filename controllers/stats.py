@@ -3,6 +3,10 @@
 if 0:
     from __init__ import *  # @UnusedWildImport
 
+import fasta_util
+import clustal_util
+import os
+
 
 @auth.requires_membership('manager')
 def index():
@@ -115,5 +119,59 @@ def plant_genotype_comparison():
                     results[plant_id]['score'] = float(results[plant_id]['score'])/(num_markers*2.)
 
         comparison = {'results': results, 'reference:': request.vars.reference_plant, 'to_compare': request.vars.plants_to_compare}
+    return dict(specie=specie, specie_type=specie_type, plants=plants, comparison=comparison)
+
+
+@auth.requires_membership('manager')
+def bio_genotype_comparison():
+    species = db(db.species).select()
+    return dict(species=species)
+
+
+@auth.requires_membership('manager')
+def bio_plant_genotype_comparison():
+    try:
+        int(request.vars.specie_id)
+        int(request.vars.species_types)
+    except:
+        redirect(URL('stats', 'bio_genotype_comparison'))
+    specie = db(db.species.id == request.vars.specie_id).select().first()
+    specie_type = db(db.species_types.id == request.vars.species_types).select().first()
+    plants = [row for row in db((db.plants.plant_line==db.plant_lines.id) &
+                                (db.plant_lines.species_type==specie_type.id)).select(db.plants.id, db.plants.name, groupby=db.plants.name)]
+    comparison = None
+    if request.vars.plants_to_compare:
+        plant_ids = []
+        if isinstance(request.vars.plants_to_compare, list):
+            plant_ids = request.vars.plants_to_compare
+        else:
+            redirect(URL('stats', 'bio_genotype_comparison'))
+        
+        to_compare = []
+        for plant_id in plant_ids:
+            # Get plant
+            plant = db(db.plants.id == plant_id).select().first()
+            # Get markers
+            raw_markers = db(db.exp_plant_marker.plant == plant_id).select()
+            markers = {}
+            for row in raw_markers:
+                markers[row['exp_plant_marker.marker']] = row['exp_plant_marker.marker_value']
+            to_compare.append({'plant_id': plant.id, 'plant_name': plant.name, 'markers': markers})
+
+        fasta_file = fasta_util.create_fasta_file(to_compare)
+        tree_file = clustal_util.get_phylo_tree(fasta_file)
+        tree_representation = None
+        if tree_file:
+            with open(tree_file) as input:
+                lines = input.readlines()
+                tree_representation = ''.join(lines)
+                tree_repesentation = tree_representation.replace(' ', '&nbsp;')
+            try:
+                os.remove(tree_file)
+            except:
+                pass
+
+        comparison = {'to_compare': to_compare, 'fasta_file':fasta_file, 'tree_file':tree_file, 'tree':tree_representation }
+
     return dict(specie=specie, specie_type=specie_type, plants=plants, comparison=comparison)
 
