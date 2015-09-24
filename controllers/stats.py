@@ -52,7 +52,7 @@ def specie_type_stats():
     stats['Useful DPs'] = db((db.exp_plant_marker.plant==db.plants.id) &              
                             (db.plants.plant_line==db.plant_lines.id) &
                             (db.plant_lines.species_type==specie_type.id) & 
-                            (db.exp_plant_marker.marker_value=='nd')).count()
+                            (db.exp_plant_marker.marker_value!='nd')).count()
     stats['% Useful DPs'] = str(round((float(stats['Useful DPs']) / float(stats['Total DPs']))*100., 2)) + '%'
     stats['Total Number of Markers'] = len(db((db.exp_plant_marker.plant==db.plants.id) &
                                            (db.plants.plant_line==db.plant_lines.id) &
