@@ -22,9 +22,31 @@
 </ul>
 {{pass}}
 
-<h3>Statistics</h3>
-<ul>
-    {{for caption, value in stats.iteritems():}}
-        <li>{{=caption}}:&nbsp;{{=value}}</li>
-    {{pass}}
-</ul>
+<div class="row-fluid">
+    <div class="span4">
+        <h3>Statistics</h3>
+        <ul>
+            {{for caption, value in stats.iteritems():}}
+                <li>{{=caption}}:&nbsp;{{=value}}</li>
+            {{pass}}
+        </ul>
+    </div>
+
+    <div class="span4">
+        <h3>Latest News</h3>
+        {{if len(news) == 0:}}
+            <p>No news found</p>
+        {{else:}}
+        <ul class="main-news">
+            {{for new in news:}}
+                <li><b>{{=new.title}}</b><br>
+                    <em>{{=new.date_published}}</em>
+                    <br>
+                    <p>{{=new.description}}</p>
+                </li>
+            {{pass}}
+        </ul>
+        {{pass}}
+    </div>
+    <br><br>
+</div>

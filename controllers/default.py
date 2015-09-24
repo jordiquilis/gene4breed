@@ -24,10 +24,12 @@ def index():
     stats['Number of markers'] = db(db.markers).count()
     stats['Number of experiments'] = db(db.experiments).count()
 
+    news = db(db.news.published == True).select(limitby=(0,5))
+
     if auth.is_logged_in():
         # Data to show only for identified users
         pass
-    return dict(display_actions=display_actions, stats=stats)
+    return dict(display_actions=display_actions, stats=stats, news=news)
 
 
 def user():
