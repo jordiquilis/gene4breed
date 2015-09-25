@@ -39,12 +39,16 @@ def species_types():
 @auth.requires_membership('manager')
 def specie_type_stats():
     try:
+        # Let's check parameters
         int(request.vars.specie_id)
         int(request.vars.species_types)
     except:
         redirect(URL('stats', 'datapoints_and_plants'))
+
+    # Get specie and specie type
     specie = db(db.species.id == request.vars.specie_id).select().first()
     specie_type = db(db.species_types.id == request.vars.species_types).select().first()
+    # Stats is a dictionary that will be shown in the view
     stats = {}
     stats['Total DPs'] = db((db.exp_plant_marker.plant==db.plants.id) & 
                                             (db.plants.plant_line==db.plant_lines.id) &
@@ -71,15 +75,18 @@ def genotype_comparison():
 
 @auth.requires_membership('manager')
 def plant_genotype_comparison():
+    # Arguments check
     try:
         int(request.vars.specie_id)
         int(request.vars.species_types)
     except:
         redirect(URL('stats', 'plant_genotype_comparison'))
+    # Get specie, specie type and the plants of this type
     specie = db(db.species.id == request.vars.specie_id).select().first()
     specie_type = db(db.species_types.id == request.vars.species_types).select().first()
     plants = [row for row in db((db.plants.plant_line==db.plant_lines.id) &
                                 (db.plant_lines.species_type==specie_type.id)).select(db.plants.id, db.plants.name, groupby=db.plants.name)]
+    # Markers parsing
     comparison = None
     if request.vars.plants_to_compare and request.vars.reference_plant:
         reference_markers_raw = db(db.exp_plant_marker.plant == request.vars.reference_plant).select()
@@ -92,13 +99,15 @@ def plant_genotype_comparison():
             plant_ids = request.vars.plants_to_compare
         else:
             plant_ids.append(request.vars.plants_to_compare)
-
+        # For each plant, we get their markers
         for plant_id in plant_ids:
             raw = db(db.exp_plant_marker.plant == plant_id).select()
             values = {}
             for row in raw:
                 values[row['exp_plant_marker.marker']] = row['exp_plant_marker.marker_value']
             to_compare.append(values)
+
+        # Here we calculate the score depending if they're equal or not
         results = {}
         for i, plant_id in enumerate(plant_ids):
             id = int(plant_id)
@@ -110,6 +119,7 @@ def plant_genotype_comparison():
                     else:
                         if reference_markers[marker] == 'H' or to_compare[i][marker] == 'H':
                             results[id]['score'] += 1
+        # We prepare the results to be displayed in the view
         num_markers = len(reference_markers)
         for i, plant_id in enumerate(plant_ids):
             plant_id = int(plant_id)
@@ -158,10 +168,13 @@ def bio_plant_genotype_comparison():
                 markers[row['exp_plant_marker.marker']] = row['exp_plant_marker.marker_value']
             to_compare.append({'plant_id': plant.id, 'plant_name': plant.name, 'markers': markers})
 
+        # Create the FASTA file
         fasta_file = fasta_util.create_fasta_file(to_compare)
+        # Create the tree using clustalw
         tree_file = clustal_util.get_phylo_tree(fasta_file)
         tree_representation = None
         if tree_file:
+            # Here we parse the tree from Phylo.draw_ascii function to be pretty in HTML format
             with open(tree_file) as input:
                 lines = input.readlines()
                 tree_representation = ''.join(lines)
