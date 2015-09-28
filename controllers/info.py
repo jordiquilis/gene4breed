@@ -24,5 +24,6 @@ def contactus():
     return dict(form=form)
 
 
+@auth.requires_membership('manager')
 def faq_and_help():
     return dict()

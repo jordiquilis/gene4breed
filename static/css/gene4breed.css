@@ -80,3 +80,9 @@
 #poweredBy a {
     color: #f2f2f2;
 }
+
+.piskis {
+    color: #f2f2f2;
+    font-weight: bold;
+    padding-right: 10px;
+}

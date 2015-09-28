@@ -19,10 +19,10 @@ response.google_analytics_id = ''
 
 response.menu = [
     (T('Home'), False, URL('default', 'index'), []),
-    (T('Help'), False, URL('info', 'faq_and_help'), []),
     (T('Contact'), False, URL('info', 'contactus'), [])
 ]
 
 if auth.is_logged_in():
+    response.menu.append((T('Help'), False, URL('info', 'faq_and_help')))
     response.menu.append((T('Manager'), False, URL('manager', 'index')))
     response.menu.append((T('Analysis Tools'), False, URL('stats', 'index')))
