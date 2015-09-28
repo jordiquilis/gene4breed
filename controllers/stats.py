@@ -86,9 +86,11 @@ def plant_genotype_comparison():
     specie_type = db(db.species_types.id == request.vars.species_types).select().first()
     plants = [row for row in db((db.plants.plant_line==db.plant_lines.id) &
                                 (db.plant_lines.species_type==specie_type.id)).select(db.plants.id, db.plants.name, groupby=db.plants.name)]
+    reference_plant = None
     # Markers parsing
     comparison = None
     if request.vars.plants_to_compare and request.vars.reference_plant:
+        reference_plant = db(db.plants.id == request.vars.reference_plant).select().first()
         reference_markers_raw = db(db.exp_plant_marker.plant == request.vars.reference_plant).select()
         reference_markers = {}
         for row in reference_markers_raw:
@@ -129,7 +131,7 @@ def plant_genotype_comparison():
                     results[plant_id]['score'] = float(results[plant_id]['score'])/(num_markers*2.)
 
         comparison = {'results': results, 'reference:': request.vars.reference_plant, 'to_compare': request.vars.plants_to_compare}
-    return dict(specie=specie, specie_type=specie_type, plants=plants, comparison=comparison)
+    return dict(specie=specie, specie_type=specie_type, plants=plants, comparison=comparison, reference=reference_plant)
 
 
 @auth.requires_membership('manager')

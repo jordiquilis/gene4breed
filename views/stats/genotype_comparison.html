@@ -1,8 +1,12 @@
 {{extend 'layout.html'}}
-<h2>Plant genotype comparison</h2>
+<h2>Analysis Tools</h2>
 
-<h3>Statistics</h3>
-
+<h3>Plant genotype comparison (Euclidean distance)</h3>
+<p>
+This analysis computes the Euclidean distance between two individuals and summarize the genotype similarity ranging from 1.0 (100% identity) to 0.0.
+</p>
+<br>
+1 - First, please select a plant species and a typology:
 <form enctype="multipart/form-data" action="{{=URL('stats','plant_genotype_comparison')}}" method="post">
     Specie: &nbsp;    
     <select id="species" name="species" onchange="changeSpecies();">

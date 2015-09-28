@@ -15,16 +15,18 @@
 <h2>Welcome to Gene4Breed</h2>
 {{if display_actions:}}
 <h3>Upload experimental data</h3>
+<p>Please select one of the following links to import new data to Gene4Breed (csv files).</p>
 <ul>
-    <li><a href="{{=URL('manager','import_traits')}}">Import traits</a></li>
-    <li><a href="{{=URL('manager','import_markers')}}">Import markers</a></li>
-    <li><a href="{{=URL('manager','import_experiment_data')}}">Import experiment data</a></li>
+    <li><a href="{{=URL('manager','import_traits')}}">Import traits</a> (to import new traits to Gene4Breed database)</li>
+    <li><a href="{{=URL('manager','import_markers')}}">Import markers</a> (to import new markers to Gene4Breed database)</li>
+    <li><a href="{{=URL('manager','import_experiment_data')}}">Import experiment data</a> (to import new experiments data to Gene4Breed database)</li>
 </ul>
 {{pass}}
 
 <div class="row-fluid">
     <div class="span4">
         <h3>Statistics</h3>
+        <p>Up to now Gene4Breed database contains: </p>
         <ul>
             {{for caption, value in stats.iteritems():}}
                 <li>{{=caption}}:&nbsp;{{=value}}</li>

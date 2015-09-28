@@ -46,6 +46,7 @@
 'Administrator Password:': 'Contrasenya del Administrador:',
 'Ajax Recipes': 'Receptes AJAX',
 'An error occured, please %s the page': 'Hi ha hagut un error, per favor %s la pàgina',
+'Analysis Tools': 'Analysis Tools',
 'And': 'I',
 'and rename it (required):': 'i renombri-la (requerit):',
 'and rename it:': " i renombri'l:",

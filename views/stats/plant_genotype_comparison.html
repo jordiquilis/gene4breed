@@ -1,14 +1,14 @@
 {{extend 'layout.html'}}
-<h2>Plant genotype comparison</h2>
+<h2>Plant genotype comparison (Euclidean distance)</h2>
 
-<h3>Statistics for specie <em>{{=specie.name}}</em> and type <em>{{=specie_type.name}}</em></h3>
+<h3>Specie <em>{{=specie.name}}</em> and type <em>{{=specie_type.name}}</em></h3>
 
 <form enctype="multipart/form-data" action="{{=URL('stats', 'plant_genotype_comparison')}}" method="post">
 
 <input type="hidden" id="specie_id" name="specie_id" value="{{=specie.id}}">
 <input type="hidden" id="species_types" name="species_types" value="{{=specie_type.id}}">
 
-Reference plant:
+Please, select a reference plant:
 <select id="reference_plant" name="reference_plant">
  {{for plant in plants:}}
     <option value='{{=plant.id}}'>{{=plant.name}}</option>
@@ -17,7 +17,7 @@ Reference plant:
 
 <br><br>
 
-Plants to compare:<br>
+Select plants to compare (you can choose multiple plants):<br>
 <select multiple id="plants_to_compare" name="plants_to_compare" style="height:190px; width:235px;">
  {{for plant in plants:}}
      <option value='{{=plant.id}}'>{{=plant.name}}</option>
@@ -33,9 +33,20 @@ Plants to compare:<br>
 {{if comparison: }}
     <br>
     <h3>Scores:</h3>
-    <ul>
-    {{for plant_id, plant in comparison['results'].iteritems():}}
-        <li><b>{{=plant['plant_name']}} ({{=plant_id}}):</b>&nbsp;{{=plant['score']}}</li>
-    {{pass}}
-    </ul>
+    <table class="table">
+        <thead>
+            <th>Plant</th>
+            <th>Reference</th>
+            <th>Score</th>
+        </thead>
+        <tbody>
+            {{for plant_id, plant in comparison['results'].iteritems():}}
+                <tr>
+                <td>{{=plant['plant_name']}} ({{=plant_id}})</td>
+                <td>{{=reference.name}}</td>
+                <td>{{=plant['score']}}</td>
+                </tr>
+            {{pass}}
+        </tbody>
+    </table>
 {{pass}}

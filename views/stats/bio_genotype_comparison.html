@@ -1,8 +1,13 @@
 {{extend 'layout.html'}}
-<h2>Plant genotype comparison 2 (Biopython)</h2>
+<h2>Analysis Tools</h2>
 
-<h3>Statistics</h3>
+<h3>Plant genotype comparison (Dendogram)</h3>
+<p>
+This analysis computes all pair-wise alignments (ClustalW algorithm) and store in similarity matrix. This matrix is used to compute a hierarchical clustering and to create a standard Newick tree file including all selected plants.
+</p>
 
+<br>
+1 - First, please select a plant species and a typology:
 <form enctype="multipart/form-data" action="{{=URL('stats','bio_plant_genotype_comparison')}}" method="post">
     Specie: &nbsp;    
     <select id="species" name="species" onchange="changeSpecies();">

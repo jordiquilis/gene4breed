@@ -1,8 +1,8 @@
 {{extend 'layout.html'}}
-<h2>Statistics</h2>
-
+<h2>Analysis tools</h2>
+<p>Please select one of the following analyses:</p>
 <ul>
-    <li><a href="{{=URL('stats', 'datapoints_and_plants')}}">Datapoints and plants</a></li>
-    <li><a href="{{=URL('stats', 'genotype_comparison')}}">Plant genotype comparison</a></li>
-    <li><a href="{{=URL('stats', 'bio_genotype_comparison')}}">Plant genotype comparison 2 (Biopython)</a></li>
+    <li><a href="{{=URL('stats', 'datapoints_and_plants')}}">Datapoints and plants of a breeding program</a> (Select this link to summarize the number of Datapoints (DPs), Markers and Plants. Useful datapoints are calculated)</li>
+    <li><a href="{{=URL('stats', 'genotype_comparison')}}">Plant genotype comparison (Euclidean distance)</a> (Select this link to quantify the genetic distance , Euclidean distance, between two individuals Plants)</li>
+    <li><a href="{{=URL('stats', 'bio_genotype_comparison')}}">Plant genotype comparison 2 (Phylogenetic Newick tree)</a> (Select this link to quantify the genetic distance of a set of individuals Plants)</li>
 </ul>
